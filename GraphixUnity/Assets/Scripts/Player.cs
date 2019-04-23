@@ -1,44 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[RequireComponent(typeof(CharacterController))]
+using UnityEngine.UI;
+
 public class Player : MonoBehaviour
 {
-    CharacterController controller = null;
+	public Slider slider;
     Animator animator = null;
-    public float speed = 20.0f;
 
-    // Use this for initialization 
+	private float speed = 0;
+
+
+	// Use this for initialization 
     void Start ()
     {
-        controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame 
-    void Update ()
-    {
-        float vertical = Input.GetAxis("Vertical");
-        float horizontal = Input.GetAxis("Horizontal");
-
-		if (animator.parameterCount > 0)
+	void Update()
+	{
+		if (speed != slider.value)
 		{
-			if (animator.parameters[0].type == AnimatorControllerParameterType.Float)
+			speed = slider.value;
+
+			if (animator.parameterCount > 1)
 			{
-				int id = animator.parameters[0].nameHash;
-				animator.SetFloat(id, vertical * 2);
+				// Set Walk Mod
+				int walkID = animator.parameters[0].nameHash;
+				animator.SetFloat(walkID, speed);
+
+				// Set Run Mod
+				float runSpeed = 1 + ((speed - 1) * 0.5f);
+				runSpeed = Mathf.Clamp(runSpeed, 1.0f, 2.0f);
+
+				int runID = animator.parameters[1].nameHash;
+				animator.SetFloat(runID, runSpeed);
 			}
 		}
-
-		var pos = transform.position;
-
-		if (controller.enabled)
-		{
-			var rot = speed;
-			if (vertical < 0)
-				rot *= -1;
-			transform.Rotate(transform.up, horizontal * rot * Time.deltaTime);
-			controller.SimpleMove(Physics.gravity);
-		}
-    }
+	}
 }
