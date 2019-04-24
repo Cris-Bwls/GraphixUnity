@@ -11,12 +11,18 @@ public class Player : MonoBehaviour
 	private float speed = 0;
 
 
-	// Use this for initialization 
+	/// <summary>
+	/// Start and get animator on object
+	/// </summary>
     void Start ()
     {
+		// Get Animator
         animator = GetComponent<Animator>();
     }
 
+	/// <summary>
+	/// Update walk and run modifiers
+	/// </summary>
 	void Update()
 	{
 		if (speed != slider.value)
@@ -25,11 +31,11 @@ public class Player : MonoBehaviour
 
 			if (animator.parameterCount > 1)
 			{
-				// Set Walk Mod
+				// Set Walk Modifier
 				int walkID = animator.parameters[0].nameHash;
 				animator.SetFloat(walkID, speed);
 
-				// Set Run Mod
+				// Set Run Modifier
 				float runSpeed = 1 + ((speed - 1) * 0.5f);
 				runSpeed = Mathf.Clamp(runSpeed, 1.0f, 2.0f);
 
